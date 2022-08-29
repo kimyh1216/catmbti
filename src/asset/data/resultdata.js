@@ -127,6 +127,5 @@ export const ResultData = [
     best: 'ENFJ',
     desc: '거인 신사라는 별명을 가진 고양이에요! 조용하고 온화한 성격을 가지고 있으며 매우 똑똑하고 크기와 생김새가 사자나 호랑이처럼 생긴 고양이 입니다!',
     image: `${Mainecoon}`
-  },
-
+  }
 ]
