@@ -2,6 +2,7 @@ import React from "react";
 import styled from 'styled-components'
 import {ProgressBar,Button} from 'react-bootstrap'
 import { QuestionData } from "../asset/data/questionData";
+import { useNavigate } from "react-router-dom";
 
 const Question = () =>{
     const [questionNo, setQuestionNo] = React.useState(0)
@@ -11,60 +12,79 @@ const Question = () =>{
         {id:"TF", score:0},
         {id:"JP", score:0}
     ])
+    const navigate = useNavigate();
+
     console.log('totalScore',totalScore)
-    const handClickButtonA = (no,type)=>{
-        if(type==='EI'){
-        //기존 스코어에 더할 값을 계산(기존의 값 + 배점)
-        const addScore = totalScore[0].score + no
-        //새로운 객체
-        const newObject = { id:'EI', score: addScore}
-        // splice 통해 새로운 객체를 해당객체 자리에 넣어줌
-        totalScore.splice(0, 1, newObject)
-        } else if ( type === 'SN'){
-            const addScore = totalScore[1].score + no
-            const newObject = { id:'SN', score: addScore}
-            totalScore.splice(1, 1, newObject)
-        } else if ( type === 'TF'){
-            const addScore = totalScore[2].score + no
-            const newObject = { id:'TF', score: addScore}
-            totalScore.splice(2, 1, newObject)
-        } else {
-            const addScore = totalScore[3].score + no
-            const newObject = { id:'JP', score: addScore}
-            totalScore.splice(3, 1, newObject)
-        }
-        setQuestionNo(questionNo+1)
-    }
-    const handClickButtonB = (no,type)=>{
-        if(type==='EI'){
-            //기존 스코어에 더할 값을 계산(기존의 값 + 배점)
-            const addScore = totalScore[0].score + no
-            //새로운 객체
-            const newObject = { id:'EI', score: addScore}
-            // splice 통해 새로운 객체를 해당객체 자리에 넣어줌
-            totalScore.splice(0, 1, newObject)
-            } else if ( type === 'SN'){
-                const addScore = totalScore[1].score + no
-                const newObject = { id:'SN', score: addScore}
-                totalScore.splice(1, 1, newObject)
-            } else if ( type === 'TF'){
-                const addScore = totalScore[2].score + no
-                const newObject = { id:'TF', score: addScore}
-                totalScore.splice(2, 1, newObject)
-            } else {
-                const addScore = totalScore[3].score + no
-                const newObject = { id:'JP', score: addScore}
-                totalScore.splice(3, 1, newObject)
-            }
+    const handClickButton = (no,type) => {
+        const newScore = totalScore.map((s) =>
+            s.id === type ? {id:s.id, score:s.score + no} : s
+        )
+        setTotalScore(newScore)
+        //다음문제로 문제수 증가
+        if (QuestionData.length !== questionNo + 1){
             setQuestionNo(questionNo+1)
+        }else {
+            //결과 페이지로 이동
+            navigate('/result')
+        }
+        
+        console.log('newScore',newScore)
     }
+    
+    // const handClickButton = (no,type)=>{
+    //     if(type==='EI'){
+    //     //기존 스코어에 더할 값을 계산(기존의 값 + 배점)
+    //     const addScore = totalScore[0].score + no
+    //     //새로운 객체
+    //     const newObject = { id:'EI', score: addScore}
+    //     // splice 통해 새로운 객체를 해당객체 자리에 넣어줌
+    //     totalScore.splice(0, 1, newObject)
+    //     } else if ( type === 'SN'){
+    //         const addScore = totalScore[1].score + no
+    //         const newObject = { id:'SN', score: addScore}
+    //         totalScore.splice(1, 1, newObject)
+    //     } else if ( type === 'TF'){
+    //         const addScore = totalScore[2].score + no
+    //         const newObject = { id:'TF', score: addScore}
+    //         totalScore.splice(2, 1, newObject)
+    //     } else {
+    //         const addScore = totalScore[3].score + no
+    //         const newObject = { id:'JP', score: addScore}
+    //         totalScore.splice(3, 1, newObject)
+    //     }
+    //     setQuestionNo(questionNo+1)
+    // }
+
+    // const handClickButtonB = (no,type)=>{
+    //     if(type==='EI'){
+    //         //기존 스코어에 더할 값을 계산(기존의 값 + 배점)
+    //         const addScore = totalScore[0].score + no
+    //         //새로운 객체
+    //         const newObject = { id:'EI', score: addScore}
+    //         // splice 통해 새로운 객체를 해당객체 자리에 넣어줌
+    //         totalScore.splice(0, 1, newObject)
+    //         } else if ( type === 'SN'){
+    //             const addScore = totalScore[1].score + no
+    //             const newObject = { id:'SN', score: addScore}
+    //             totalScore.splice(1, 1, newObject)
+    //         } else if ( type === 'TF'){
+    //             const addScore = totalScore[2].score + no
+    //             const newObject = { id:'TF', score: addScore}
+    //             totalScore.splice(2, 1, newObject)
+    //         } else {
+    //             const addScore = totalScore[3].score + no
+    //             const newObject = { id:'JP', score: addScore}
+    //             totalScore.splice(3, 1, newObject)
+    //         }
+    //         setQuestionNo(questionNo+1)
+    // }
     return (
         <Wrapper>
             <ProgressBar variant="danger" now={(questionNo/QuestionData.length)*100} style={{marginTop:'20px'}} />
             <Title>{QuestionData[questionNo].title}</Title>
             <ButtonGroup>
-            <Button onClick={()=>handClickButtonA(1,QuestionData[questionNo].type)} style={{width:'40%',minHeight:'200px',fontSize:'20px'}}>{QuestionData[questionNo].answera}</Button>
-            <Button onClick={()=>handClickButtonA(0,QuestionData[questionNo].type)} style={{width:'40%',minHeight:'200px',fontSize:'20px',marginLeft:'20px'}}>{QuestionData[questionNo].answerb}</Button>
+            <Button onClick={()=>handClickButton(1,QuestionData[questionNo].type)} style={{width:'40%',minHeight:'200px',fontSize:'20px'}}>{QuestionData[questionNo].answera}</Button>
+            <Button onClick={()=>handClickButton(0,QuestionData[questionNo].type)} style={{width:'40%',minHeight:'200px',fontSize:'20px',marginLeft:'20px'}}>{QuestionData[questionNo].answerb}</Button>
             </ButtonGroup>
         </Wrapper>
     )
